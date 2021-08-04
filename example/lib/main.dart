@@ -2,10 +2,10 @@ import 'package:constraint_layout/constraint_layout.dart';
 import 'package:flutter/material.dart';
 
 void main() => runApp(
-  MaterialApp(
-    home: ConstLayTrial(),
-  ),
-);
+      MaterialApp(
+        home: ConstLayTrial(),
+      ),
+    );
 
 class ConstLayTrial extends StatelessWidget {
   const ConstLayTrial({Key? key}) : super(key: key);
@@ -40,8 +40,8 @@ class ConstLayTrial extends StatelessWidget {
             height: 200,
             startToStartOf: parent,
             topToTopOf: parent,
-            padding: ConstraintLayoutEdgeInsets(start: 10),
-            margin: ConstraintLayoutEdgeInsets(start: 20, end: 20),
+            //padding: ConstraintLayoutEdgeInsets(start: 10),
+            //margin: ConstraintLayoutEdgeInsets(start: 20, end: 20),
             child: _childGenerator(Colors.purple, "This"),
           ),
           Constrained(
@@ -50,7 +50,7 @@ class ConstLayTrial extends StatelessWidget {
             height: 200,
             bottomToBottomOf: parent,
             endToEndOf: parent,
-            padding: ConstraintLayoutEdgeInsets(end: 10, bottom: 10),
+            //padding: ConstraintLayoutEdgeInsets(end: 10, bottom: 10),
             child: _childGenerator(Colors.purple, "ConstraintLayout!"),
           ),
           Constrained(
@@ -74,15 +74,12 @@ class ConstLayTrial extends StatelessWidget {
           // ),
           Constrained(
             height: 60,
-            width: match.parent,
+            width: 0, //wrap.content,
             topToTopOf: parent,
             startToStartOf: parent,
             endToEndOf: parent,
             bottomToBottomOf: parent,
-            margin: ConstraintLayoutEdgeInsets(
-              start: 10,
-              end:40,
-            ),
+            //margin: ConstraintLayoutEdgeInsets(start: 10, end: 40),
             child: _childGenerator(Colors.purple, "Hello"),
           ),
         ],

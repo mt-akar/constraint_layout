@@ -75,8 +75,8 @@ class Constrained {
         realMarginEnd = margin?.end ?? marginEnd ?? 0,
         realMarginTop = margin?.top ?? marginTop ?? 0,
         realMarginBottom = margin?.bottom ?? marginBottom ?? 0,
-        assert(width == match.parent || width >= 0, "width cannot be negative"),
-        assert(height == match.parent || height >= 0, "height cannot be negative");
+        assert(width == match.parent || width == wrap.content || width >= 0, "width cannot be negative"),
+        assert(height == match.parent || height == wrap.content || height >= 0, "height cannot be negative");
 
 // TODO: assertions
 }

@@ -31,45 +31,45 @@ class ConstraintLayout extends StatelessWidget {
 
         /////// Constraint inferring ///////
         // Create the children list.
-        var constPosList = children(parentKey);
+        var constrainedList = children(parentKey);
 
         // TODO: Check if there is a duplicate key
-        for (int i = 0; i < constPosList.length; i++) {
-          if (constPosList[i].key == null) {
+        for (int i = 0; i < constrainedList.length; i++) {
+          if (constrainedList[i].key == null) {
             continue;
           }
-          for (int j = i + 1; j < constPosList.length; j++) {
-            if (constPosList[i].key == constPosList[j].key) {
-              throw ArgumentError("The key ${constPosList[i].key} identifies more than 1 item.");
+          for (int j = i + 1; j < constrainedList.length; j++) {
+            if (constrainedList[i].key == constrainedList[j].key) {
+              throw ArgumentError("The key ${constrainedList[i].key} identifies more than 1 item.");
             }
           }
         }
 
         // Resolve match.parent width and heights.
-        constPosList.forEach((pos) {
+        constrainedList.forEach((pos) {
           pos.realWidth = pos.width == match.parent ? constraints.maxWidth - pos.realMarginStart - pos.realMarginEnd : pos.width;
           pos.realHeight = pos.height == match.parent ? constraints.maxHeight - pos.realMarginTop - pos.realMarginBottom : pos.height;
         });
 
         // Add parent to the list so that its dimensions can be inferred just like any other view.
-        constPosList.add(parent);
+        constrainedList.add(parent);
 
         var changed = true;
         while (changed) {
           changed = false;
 
-          constPosList.forEach((pos) {
+          constrainedList.forEach((pos) {
             ///////////////// START /////////////////
             if (pos.constraintStart == null) {
               // Infer from constraint
               if (pos.startToEndOf != null) {
-                var anchorPos = constPosList.firstWhere((element) => element.key == pos.startToEndOf);
+                var anchorPos = constrainedList.firstWhere((element) => element.key == pos.startToEndOf);
                 if(anchorPos.constraintEnd != null){
                   pos.constraintStart = anchorPos.constraintEnd! + pos.realMarginStart;
                   changed = true;
                 }
               } else if (pos.startToStartOf != null) {
-                var anchorPos = constPosList.firstWhere((element) {
+                var anchorPos = constrainedList.firstWhere((element) {
                   return element.key == pos.startToStartOf;
                 });
                 if(anchorPos.constraintStart != null){
@@ -88,13 +88,13 @@ class ConstraintLayout extends StatelessWidget {
             if (pos.constraintEnd == null) {
               // Infer from constraint
               if (pos.endToStartOf != null) {
-                var anchorPos = constPosList.firstWhere((element) => element.key == pos.endToStartOf);
+                var anchorPos = constrainedList.firstWhere((element) => element.key == pos.endToStartOf);
                 if(anchorPos.constraintStart != null){
                   pos.constraintEnd = anchorPos.constraintStart! + pos.realMarginEnd;
                   changed = true;
                 }
               } else if (pos.endToEndOf != null) {
-                var anchorPos = constPosList.firstWhere((element) => element.key == pos.endToEndOf);
+                var anchorPos = constrainedList.firstWhere((element) => element.key == pos.endToEndOf);
                 if(anchorPos.constraintEnd != null){
                   pos.constraintEnd = anchorPos.constraintEnd! + pos.realMarginEnd;
                   changed = true;
@@ -111,13 +111,13 @@ class ConstraintLayout extends StatelessWidget {
             if (pos.constraintTop == null) {
               // Infer from constraint
               if (pos.topToBottomOf != null) {
-                var anchorPos = constPosList.firstWhere((element) => element.key == pos.topToBottomOf);
+                var anchorPos = constrainedList.firstWhere((element) => element.key == pos.topToBottomOf);
                 if(anchorPos.constraintBottom != null){
                   pos.constraintTop = anchorPos.constraintBottom! + pos.realMarginTop;
                   changed = true;
                 }
               } else if (pos.topToTopOf != null) {
-                var anchorPos = constPosList.firstWhere((element) => element.key == pos.topToTopOf);
+                var anchorPos = constrainedList.firstWhere((element) => element.key == pos.topToTopOf);
                 if(anchorPos.constraintTop != null){
                   pos.constraintTop = anchorPos.constraintTop! + pos.realMarginTop;
                   changed = true;
@@ -134,13 +134,13 @@ class ConstraintLayout extends StatelessWidget {
             if (pos.constraintBottom == null) {
               // Infer from constraint
               if (pos.bottomToTopOf != null) {
-                var anchorPos = constPosList.firstWhere((element) => element.key == pos.bottomToTopOf);
+                var anchorPos = constrainedList.firstWhere((element) => element.key == pos.bottomToTopOf);
                 if(anchorPos.constraintTop != null){
                   pos.constraintBottom = anchorPos.constraintTop! + pos.realMarginBottom;
                   changed = true;
                 }
               } else if (pos.bottomToBottomOf != null) {
-                var anchorPos = constPosList.firstWhere((element) => element.key == pos.bottomToBottomOf);
+                var anchorPos = constrainedList.firstWhere((element) => element.key == pos.bottomToBottomOf);
                 if(anchorPos.constraintBottom != null){
                   pos.constraintBottom = anchorPos.constraintBottom! + pos.realMarginBottom;
                   changed = true;
@@ -156,11 +156,11 @@ class ConstraintLayout extends StatelessWidget {
         }
 
         // Finally remove the parent. It is now drawn
-        constPosList.removeLast();
+        constrainedList.removeLast();
 
         print("Elapsed: ${s.elapsed}");
         return Stack(
-          children: constPosList.map((e) {
+          children: constrainedList.map((e) {
             var child = Center(
               child: ConstrainedBox(
                 constraints: BoxConstraints(
