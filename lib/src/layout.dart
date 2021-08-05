@@ -1,6 +1,8 @@
 import 'package:constraint_layout/constraint_layout.dart';
 import 'package:flutter/widgets.dart';
 
+import 'child_size.dart';
+
 /// Similar to Android's constraint layout.
 class ConstraintLayout extends StatelessWidget {
   final List<Constrained> Function(ValueKey) children;
@@ -33,6 +35,20 @@ class ConstraintLayout extends StatelessWidget {
         // Create the children list.
         var constrainedList = children(parentKey);
 
+        ///////////////////////////////////////////////////
+        constrainedList.forEach((pos) {
+          print("test ${pos.toString()}");
+          var t = SizeProviderWidget(
+            onChildSize: (Size size) {
+              print("height: ${size.height}, width: ${size.width}");
+            },
+            child: pos.child,
+          );
+          pos.realWidth = pos.width == match.parent ? constraints.maxWidth - pos.realMarginStart - pos.realMarginEnd : pos.width;
+          pos.realHeight = pos.height == match.parent ? constraints.maxHeight - pos.realMarginTop - pos.realMarginBottom : pos.height;
+        });
+        ///////////////////////////////////////////////////
+
         // TODO: Check if there is a duplicate key
         for (int i = 0; i < constrainedList.length; i++) {
           if (constrainedList[i].key == null) {
@@ -59,12 +75,12 @@ class ConstraintLayout extends StatelessWidget {
           changed = false;
 
           constrainedList.forEach((pos) {
-            ///////////////// START /////////////////
+            //// START ////
             if (pos.constraintStart == null) {
               // Infer from constraint
               if (pos.startToEndOf != null) {
                 var anchorPos = constrainedList.firstWhere((element) => element.key == pos.startToEndOf);
-                if(anchorPos.constraintEnd != null){
+                if (anchorPos.constraintEnd != null) {
                   pos.constraintStart = anchorPos.constraintEnd! + pos.realMarginStart;
                   changed = true;
                 }
@@ -72,7 +88,7 @@ class ConstraintLayout extends StatelessWidget {
                 var anchorPos = constrainedList.firstWhere((element) {
                   return element.key == pos.startToStartOf;
                 });
-                if(anchorPos.constraintStart != null){
+                if (anchorPos.constraintStart != null) {
                   pos.constraintStart = anchorPos.constraintStart! + pos.realMarginStart;
                   changed = true;
                 }
@@ -84,18 +100,18 @@ class ConstraintLayout extends StatelessWidget {
               }
             }
 
-            ///////////////// END /////////////////
+            //// END ////
             if (pos.constraintEnd == null) {
               // Infer from constraint
               if (pos.endToStartOf != null) {
                 var anchorPos = constrainedList.firstWhere((element) => element.key == pos.endToStartOf);
-                if(anchorPos.constraintStart != null){
+                if (anchorPos.constraintStart != null) {
                   pos.constraintEnd = anchorPos.constraintStart! + pos.realMarginEnd;
                   changed = true;
                 }
               } else if (pos.endToEndOf != null) {
                 var anchorPos = constrainedList.firstWhere((element) => element.key == pos.endToEndOf);
-                if(anchorPos.constraintEnd != null){
+                if (anchorPos.constraintEnd != null) {
                   pos.constraintEnd = anchorPos.constraintEnd! + pos.realMarginEnd;
                   changed = true;
                 }
@@ -107,18 +123,18 @@ class ConstraintLayout extends StatelessWidget {
               }
             }
 
-            ///////////////// TOP /////////////////
+            //// TOP ////
             if (pos.constraintTop == null) {
               // Infer from constraint
               if (pos.topToBottomOf != null) {
                 var anchorPos = constrainedList.firstWhere((element) => element.key == pos.topToBottomOf);
-                if(anchorPos.constraintBottom != null){
+                if (anchorPos.constraintBottom != null) {
                   pos.constraintTop = anchorPos.constraintBottom! + pos.realMarginTop;
                   changed = true;
                 }
               } else if (pos.topToTopOf != null) {
                 var anchorPos = constrainedList.firstWhere((element) => element.key == pos.topToTopOf);
-                if(anchorPos.constraintTop != null){
+                if (anchorPos.constraintTop != null) {
                   pos.constraintTop = anchorPos.constraintTop! + pos.realMarginTop;
                   changed = true;
                 }
@@ -130,18 +146,18 @@ class ConstraintLayout extends StatelessWidget {
               }
             }
 
-            ///////////////// BOTTOM /////////////////
+            //// BOTTOM ////
             if (pos.constraintBottom == null) {
               // Infer from constraint
               if (pos.bottomToTopOf != null) {
                 var anchorPos = constrainedList.firstWhere((element) => element.key == pos.bottomToTopOf);
-                if(anchorPos.constraintTop != null){
+                if (anchorPos.constraintTop != null) {
                   pos.constraintBottom = anchorPos.constraintTop! + pos.realMarginBottom;
                   changed = true;
                 }
               } else if (pos.bottomToBottomOf != null) {
                 var anchorPos = constrainedList.firstWhere((element) => element.key == pos.bottomToBottomOf);
-                if(anchorPos.constraintBottom != null){
+                if (anchorPos.constraintBottom != null) {
                   pos.constraintBottom = anchorPos.constraintBottom! + pos.realMarginBottom;
                   changed = true;
                 }
@@ -155,10 +171,13 @@ class ConstraintLayout extends StatelessWidget {
           });
         }
 
+        /////// Cleanup ///////
         // Finally remove the parent. It is now drawn
         constrainedList.removeLast();
 
         print("Elapsed: ${s.elapsed}");
+
+        /////// Stack construction ///////
         return Stack(
           children: constrainedList.map((e) {
             var child = Center(
@@ -184,16 +203,22 @@ class ConstraintLayout extends StatelessWidget {
               );
             }
 
+            // Positioned.fill values
             var left = e.realWidth! > e.constraintEnd! - e.constraintStart! ? (e.constraintEnd! + e.constraintStart! - e.realWidth!) / 2 : e.constraintStart!;
             var right = e.realWidth! > e.constraintEnd! - e.constraintStart! ? (e.constraintEnd! + e.constraintStart! + e.realWidth!) / 2 : e.constraintEnd!;
 
+            var top = e.realHeight! > e.constraintBottom! - e.constraintTop! ? (e.constraintBottom! + e.constraintTop! - e.realHeight!) / 2 : e.constraintTop!;
+            var bottom = e.realHeight! > e.constraintBottom! - e.constraintTop! ? (e.constraintBottom! + e.constraintTop! + e.realHeight!) / 2 : e.constraintBottom!;
+
+            // Construct [Positioned] widgets.
+            //
             // Map end to right and bottom to bottom because in [Positioned] syntax,
             // right and bottom are distance from the right and bottom of the [Stack].
             return Positioned.fill(
               left: left,
               right: constraints.maxWidth - right,
-              top: e.constraintTop!,
-              bottom: constraints.maxHeight - e.constraintBottom!,
+              top: top,
+              bottom: constraints.maxHeight - bottom,
               child: padding != null ? Padding(padding: padding, child: child) : child,
             );
           }).toList(),
