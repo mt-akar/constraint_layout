@@ -8,19 +8,19 @@ class Constrained {
   double? constraintBottom;
   double? realWidth;
   double? realHeight;
-  double realMarginStart;
-  double realMarginTop;
-  double realMarginEnd;
-  double realMarginBottom;
+  double finalMarginStart;
+  double finalMarginTop;
+  double finalMarginEnd;
+  double finalMarginBottom;
 
   final ValueKey? key;
 
   /// If 0 is passed, width is inferred from the constraints.
-  /// If match.parent is passed, width same as the parent's width.
+  /// If matchParent is passed, width same as the parent's width.
   final double width;
 
   /// If 0 is passed, height is inferred from the constraints.
-  /// If match.parent is passed, height same as the parent's height.
+  /// If matchParent is passed, height same as the parent's height.
   final double height;
 
   final ValueKey? startToStartOf;
@@ -36,13 +36,13 @@ class Constrained {
   final double? marginTop;
   final double? marginEnd;
   final double? marginBottom;
-  final ConstraintLayoutEdgeInsets? margin;
+  final ConstrainedEdgeInsets? margin;
 
   final double? paddingStart;
   final double? paddingTop;
   final double? paddingEnd;
   final double? paddingBottom;
-  final ConstraintLayoutEdgeInsets? padding;
+  final ConstrainedEdgeInsets? padding;
 
   // final HorizontalFit? horizontalFit;
   // final VerticalFit? verticalFit;
@@ -71,12 +71,12 @@ class Constrained {
     this.paddingBottom,
     this.padding,
     required this.child,
-  })  : realMarginStart = margin?.start ?? marginStart ?? 0,
-        realMarginEnd = margin?.end ?? marginEnd ?? 0,
-        realMarginTop = margin?.top ?? marginTop ?? 0,
-        realMarginBottom = margin?.bottom ?? marginBottom ?? 0,
-        assert(width == match.parent || width == wrap.content || width >= 0, "width cannot be negative"),
-        assert(height == match.parent || height == wrap.content || height >= 0, "height cannot be negative");
+  })  : finalMarginStart = margin?.start ?? marginStart ?? 0,
+        finalMarginEnd = margin?.end ?? marginEnd ?? 0,
+        finalMarginTop = margin?.top ?? marginTop ?? 0,
+        finalMarginBottom = margin?.bottom ?? marginBottom ?? 0,
+        assert(width == matchParent || width == wrapContent || width >= 0, "width cannot be negative"),
+        assert(height == matchParent || height == wrapContent || height >= 0, "height cannot be negative");
 
 // TODO: assertions
 }

@@ -3,7 +3,7 @@ description: Example project for constraint_layout
 
 publish_to: 'none'
 
-version: 1.0.0+1
+version: 1.0.0
 
 environment:
   sdk: ">=2.12.0 <3.0.0"
@@ -15,8 +15,6 @@ dependencies:
   # constraint_layout: ^1.0.0
   constraint_layout:
     path: ../../constraint_layout
-
-  cupertino_icons: ^1.0.2
 
 dev_dependencies:
   flutter_test:

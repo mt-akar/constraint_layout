@@ -1,17 +1,17 @@
-class ConstraintLayoutEdgeInsets {
+class ConstrainedEdgeInsets {
   final double? start;
   final double? end;
   final double? top;
   final double? bottom;
 
-  const ConstraintLayoutEdgeInsets({
+  const ConstrainedEdgeInsets({
     this.start,
     this.end,
     this.top,
     this.bottom,
   });
 
-  ConstraintLayoutEdgeInsets.all(double padding)
+  ConstrainedEdgeInsets.all(double padding)
       : start = padding,
         top = padding,
         end = padding,

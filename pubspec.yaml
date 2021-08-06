@@ -1,7 +1,7 @@
 name: constraint_layout
-description: Android's belowed constraint layout for Flutter
+description: Android's belowed constraint layout, for Flutter
 version: 0.0.1
-homepage:
+homepage: https://github.com/m-azyoksul/constraint_layout
 
 environment:
   sdk: ">=2.12.0 <3.0.0"
